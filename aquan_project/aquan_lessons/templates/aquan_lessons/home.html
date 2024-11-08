@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Aquan Lessons!</title>
+</head>
+<body>
+    <!-- Pasek boczny nawigacji -->
+    <div id="sidebar" class="sidebar">
+      <h2>Lista lekcji</h2>
+      <ul>
+          {% for lesson in lessons %}
+              <li><a href="{% url 'lesson_detail' lesson_id=lesson.id %}">{{ lesson.title }}</a></li>
+          {% endfor %}
+      </ul>
+    </div>
+
+    <!-- Główna treść strony -->
+    <div id="main-content" class="content">
+      <button onclick="toggleSidebar()" class="open-btn">
+          &#9776; <!-- Symbol trzech kresek -->
+      </button>
+
+      <h1>Welcome to Aquan Lessons!</h1>
+      <p>Wybierz lekcję, aby rozpocząć naukę.</p>
+
+      <!-- Lista lekcji z informacją o statusie -->
+      <ul>
+          {% for lesson in lessons %}
+              <li>
+                  <a href="{% url 'lesson_detail' lesson.id %}">{{ lesson.title }}</a>
+                  {% if lesson.id in completed_lessons %}
+                      <span class="completed-label">[Ukończona]</span>
+                  {% endif %}
+              </li>
+          {% endfor %}
+      </ul>
+
+      <!-- Linki do rejestracji/logowania oraz formularz wylogowania -->
+      {% if user.is_authenticated %}
+          <a href="{% url 'profile' %}">Mój profil</a> |
+          <!-- Formularz wylogowania -->
+          <form action="{% url 'logout' %}" method="post" style="display: inline;">
+              {% csrf_token %}
+              <button type="submit">Wyloguj</button>
+          </form>
+      {% else %}
+          <a href="{% url 'register' %}">Zarejestruj się</a> |
+          <a href="{% url 'login' %}">Zaloguj się</a>
+      {% endif %}
+    </div>
+
+    <style>
+        .sidebar {
+          height: 100%;
+          width: 0;
+          position: fixed;
+          top: 0;
+          left: 0;
+          background-color: #111;
+          overflow-x: hidden;
+          transition: 0.5s;
+          padding-top: 60px;
+          color: white;
+          z-index: 1000;
+        }
+      
+        .sidebar ul {
+          list-style-type: none;
+          padding: 0;
+        }
+      
+        .sidebar ul li {
+          padding: 8px;
+          text-align: left;
+        }
+      
+        .sidebar ul li a {
+          color: white;
+          text-decoration: none;
+        }
+      
+        .open-btn {
+          position: fixed;
+          top: 20px;
+          left: 20px;
+          font-size: 16px;
+          background-color: #111;
+          color: white;
+          border: none;
+          cursor: pointer;
+          z-index: 1001;
+          padding: 5px 10px;
+        }
+      
+        .content {
+          transition: margin-left 0.5s;
+          margin-left: 50px;
+        }
+      
+        .sidebar-open {
+          margin-left: 250px; /* Ustawienie marginesu, gdy pasek boczny jest otwarty */
+        }
+      
+        .completed-label {
+          color: green;
+          font-weight: bold;
+        }
+      </style>
+      
+    
+      
+    <script>
+        function toggleSidebar() {
+          const sidebar = document.getElementById("sidebar");
+          const content = document.getElementById("main-content");
+          
+          if (sidebar.style.width === "250px") {
+            sidebar.style.width = "0";
+            content.classList.remove("sidebar-open");
+          } else {
+            sidebar.style.width = "250px";
+            content.classList.add("sidebar-open");
+          }
+        }
+      
+        // Zamykanie paska bocznego po kliknięciu na dowolny obszar poza nim
+        document.addEventListener("click", function (event) {
+          const sidebar = document.getElementById("sidebar");
+          const openBtn = document.querySelector(".open-btn");
+          const content = document.getElementById("main-content");
+      
+          if (
+            sidebar.style.width === "250px" &&
+            !sidebar.contains(event.target) &&
+            !openBtn.contains(event.target)
+          ) {
+            sidebar.style.width = "0";
+            content.classList.remove("sidebar-open");
+          }
+        });
+      </script>
+      
+</body>
+</html>

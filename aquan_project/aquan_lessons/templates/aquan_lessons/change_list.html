@@ -1,0 +1,14 @@
+{% extends "admin/change_list.html" %}
+{% block content %}
+<form method="POST" action="">
+    {% csrf_token %}
+    <select name="module">
+        <option value="">--- Wybierz moduł ---</option>
+        {% for module in modules %}
+            <option value="{{ module.id }}">{{ module.title }}</option>
+        {% endfor %}
+    </select>
+    <input type="submit" value="Przypisz do modułu">
+</form>
+{{ block.super }}
+{% endblock %}

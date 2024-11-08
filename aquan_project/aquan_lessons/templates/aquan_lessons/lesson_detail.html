@@ -1,0 +1,139 @@
+<!-- aquan_lessons/templates/aquan_lessons/lesson_detail.html -->
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ lesson.title }}</title>
+</head>
+<body>
+<div class="content">
+
+    <h1>{{ lesson.title }}</h1>
+    <p>{{ lesson.content }}</p>
+
+    <div class="navigation">
+    
+        {% if previous_lesson %}
+            <a href="{% url 'lesson_detail' lesson_id=previous_lesson.id %}" class="nav-btn">Previous</a>
+        {% else %}
+            <span class="nav-btn disabled">Previous</span>
+        {% endif %}
+        <a href="{% url 'home' %}" class="nav-btn">Home</a>
+        {% if next_lesson %}
+            <a href="{% url 'lesson_detail' lesson_id=next_lesson.id %}" class="nav-btn">Next</a>
+        {% else %}
+            <span class="nav-btn disabled">Next</span>
+        {% endif %}
+    </div>
+    
+    
+
+<!-- Pasek boczny nawigacji - kod do umieszczenia w home.html i lesson_detail.html -->
+    <div id="sidebar" class="sidebar">
+    <h2>Lista lekcji</h2>
+    <ul>
+        {% for lesson in lessons %}
+            <li><a href="{% url 'lesson_detail' lesson_id=lesson.id %}">{{ lesson.title }}</a></li>
+        {% endfor %}
+    </ul>
+    </div>
+
+<!-- Przycisk do otwierania paska bocznego -->
+<button onclick="toggleSidebar()" class="open-btn">
+    &#9776; <!-- Symbol trzech kresek -->
+  </button>
+  
+<style>
+    .sidebar {
+        height: 100%;
+        width: 0;
+        position: fixed;
+        top: 0;
+        left: 0;
+        background-color: #111;
+        overflow-x: hidden;
+        transition: 0.5s;
+        padding-top: 60px;
+        color: white;
+        z-index: 1000;
+    }
+  
+    .sidebar ul {
+        list-style-type: none;
+        padding: 0;
+    }
+  
+    .sidebar ul li {
+        padding: 8px;
+        text-align: left;
+    }
+  
+    .sidebar ul li a {
+        color: white;
+        text-decoration: none;
+    }
+  
+    .open-btn {
+      position: fixed;
+      top: 20px;
+      left: 20px; /* Zmniejszony margines od lewej, aby oddalić przycisk od treści */
+      font-size: 16px; /* Ustawienie odpowiedniego rozmiaru dla symbolu */
+      background-color: #111;
+      color: white;
+      border: none;
+      cursor: pointer;
+      z-index: 1001;
+      padding: 5px 10px;
+  }
+
+  /* Jeśli chcesz przesunąć całą treść na prawo od przycisku */
+  .content {
+      margin-left: 50px; /* Margines dla całej treści strony */
+  }
+    .sidebar-open .content {
+        margin-left: 250px; /* Przesunięcie treści o szerokość paska bocznego */
+    }
+
+    .nav-btn {
+        display: inline-block;
+        padding: 10px 20px;
+        margin: 5px;
+        background-color: #4CAF50;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        font-size: 16px;
+        text-align: center;
+    }
+
+    .nav-btn:hover {
+        background-color: #45a049;
+    }
+
+    .nav-btn.disabled {
+        background-color: #d3d3d3; /* Kolor szary dla nieaktywnego przycisku */
+        color: #808080; /* Kolor tekstu dla nieaktywnego przycisku */
+        pointer-events: none; /* Wyłączenie klikalności */
+    }
+  </style>
+  
+  <form method="POST">
+    {% csrf_token %}
+    <button type="submit" class="nav-btn">Ukończ lekcję</button>
+</form>
+
+  <script>
+function toggleSidebar() {
+    const sidebar = document.getElementById("sidebar");
+    if (sidebar.style.width === "250px") {
+        sidebar.style.width = "0";
+    } else {
+        sidebar.style.width = "250px";
+    }
+}
+  </script>
+  </div>  
+
+</body>
+</html>

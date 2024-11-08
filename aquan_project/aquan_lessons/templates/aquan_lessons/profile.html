@@ -1,0 +1,127 @@
+<!-- aquan_lessons/templates/aquan_lessons/profile.html -->
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil użytkownika - {{ user.username }}</title>
+</head>
+<body>
+  <div id="main-content" class="content">
+    <h1>Witaj, {{ user.username }}!</h1>
+
+    <h2>Twoje postępy w lekcjach:</h2>
+    <ul>
+        {% for lesson_progress in completed_lessons %}
+            <li><a href="{% url 'lesson_detail' lesson_id=lesson_progress.lesson.id %}">{{ lesson_progress.lesson.title }}</a> - Ukończona</li>
+        {% empty %}
+            <li>Nie ukończyłeś jeszcze żadnych lekcji.</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Twoje postępy w quizach:</h2>
+    <ul>
+        {% for progress in progress %}
+            {% if progress.quiz %}
+                <li>{{ progress.quiz.title }} - {{ progress.status }}</li>
+            {% endif %}
+        {% empty %}
+            <li>Brak dostępnych quizów lub postępów.</li>
+        {% endfor %}
+    </ul>
+
+    <a href="{% url 'home' %}">Wróć do strony głównej</a>
+  </div>
+
+  <!-- Pasek boczny nawigacji - kod do umieszczenia w profile.html -->
+  <div id="sidebar" class="sidebar">
+      <h2>Lista lekcji</h2>
+      <ul>
+          {% for lesson in lessons %}
+              <li><a href="{% url 'lesson_detail' lesson_id=lesson.id %}">{{ lesson.title }}</a></li>
+          {% endfor %}
+      </ul>
+  </div>
+
+  <!-- Przycisk do otwierania paska bocznego -->
+  <button onclick="toggleSidebar()" class="open-btn">
+    &#9776; <!-- Symbol trzech kresek -->
+  </button>
+
+  <style>
+    h1 {
+    margin-top: 20px; /* dostosuj tę wartość w zależności od potrzeb */
+    margin-left: -10px; /* ta wartość pomoże utrzymać nagłówek w odpowiedniej odległości od przycisku paska bocznego */
+}
+
+    .sidebar {
+        height: 100%;
+        width: 0;
+        position: fixed;
+        top: 0;
+        left: 0;
+        background-color: #111;
+        overflow-x: hidden;
+        transition: 0.5s;   
+        padding-top: 60px;
+        color: white;
+        z-index: 1000;
+    }
+
+    .sidebar ul {
+        list-style-type: none;
+        padding: 0;
+    }
+
+    .sidebar ul li {
+        padding: 8px;
+        text-align: left;
+    }
+
+    .sidebar ul li a {
+        color: white;
+        text-decoration: none;
+    }
+
+    .open-btn {
+        position: fixed;
+        top: 20px;
+        left: 20px; /* Zawsze w stałej pozycji */
+        font-size: 16px;
+        background-color: #111;
+        color: white;
+        border: none;
+        cursor: pointer;
+        z-index: 1001;
+        padding: 5px 10px;
+    }
+
+    .content {
+        transition: margin-left 0.5s;
+        margin-left: 60px; /* Zaktualizowany margines, aby nie zasłaniało przycisku */
+    }
+
+    .sidebar-open #main-content {
+        margin-left: 250px;
+    }
+  </style>
+
+  <script>
+  function toggleSidebar() {
+      const sidebar = document.getElementById("sidebar");
+      const content = document.getElementById("main-content");
+      const openBtn = document.querySelector(".open-btn");
+
+      if (sidebar.style.width === "250px") {
+          sidebar.style.width = "0";
+          content.style.marginLeft = "60px"; // Powrót do pierwotnego marginesu
+          openBtn.style.left = "20px"; // Przycisk wraca do oryginalnej pozycji
+      } else {
+          sidebar.style.width = "250px";
+          content.style.marginLeft = "250px";
+          openBtn.style.left = "20px"; // Przycisk pozostaje w swojej pozycji
+      }
+  }
+  </script>
+</body>
+</html>

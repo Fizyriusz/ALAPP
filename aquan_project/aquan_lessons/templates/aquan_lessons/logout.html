@@ -1,0 +1,18 @@
+<!-- aquan_lessons/templates/aquan_lessons/login.html -->
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logowanie</title>
+</head>
+<body>
+    <h2>Logowanie</h2>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Zaloguj się</button>
+    </form>
+    <a href="{% url 'register' %}">Nie masz konta? Zarejestruj się tutaj.</a>
+</body>
+</html>
